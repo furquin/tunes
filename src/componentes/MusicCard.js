@@ -8,28 +8,43 @@ export default class MusicCard extends Component {
     super();
 
     this.state = {
-      checked: false,
       isLoading: false,
+      favorite: false,
     };
   }
   /* Consultei o repositório do Fernanda Andrade para resolver essa parte.
         * https://github.com/tryber/sd-016-a-project-trybetunes/pull/54/commits/05462d67bc128a47aa8a7ed94b123ef2b5b45235 */
 
+  componentDidMount() {
+    this.getFavorite();
+  }
+
   handleChange = () => {
     const { song } = this.props;
     this.setState({
-      checked: true,
       isLoading: true,
     }, () => {
       addSong(song).then(() => {
-        this.setState({ isLoading: false });
+        this.setState({ isLoading: false, favorite: true });
       });
     });
   }
 
+  /* Consultei o repositório do Fernanda Andrade para resolver essa parte.
+        *https://github.com/tryber/sd-016-a-project-trybetunes/pull/54/commits/6382003426e232872e79668836ef3655cf68821e */
+
+  getFavorite = () => {
+    const { checked } = this.props;
+    if (checked === true) {
+      this.setState({
+        favorite: true,
+      });
+    }
+  }
+
   render() {
     const { trackName, previewUrl, trackId } = this.props;
-    const { checked, isLoading } = this.state;
+    const { isLoading, favorite } = this.state;
     const { handleChange } = this;
     return (
       isLoading ? <Loading /> : (
@@ -50,7 +65,7 @@ export default class MusicCard extends Component {
               name="inputFavorite"
               type="checkbox"
               data-testid={ `checkbox-music-${trackId}` }
-              checked={ checked }
+              checked={ favorite }
               onChange={ handleChange }
 
             />
@@ -65,6 +80,7 @@ MusicCard.propTypes = {
   trackName: PropTypes.string.isRequired,
   previewUrl: PropTypes.string.isRequired,
   trackId: PropTypes.number.isRequired,
+  checked: PropTypes.bool.isRequired,
   song: PropTypes.shape({
     trackId: PropTypes.number,
   }).isRequired,

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Header from '../componentes/Header';
 import getMusics from '../services/musicsAPI';
 import MusicCard from '../componentes/MusicCard';
+import { getFavoriteSongs } from '../services/favoriteSongsAPI';
 
 class Album extends Component {
   constructor() {
@@ -25,13 +26,22 @@ class Album extends Component {
         fetchMusics = async () => {
           const { match: { params: { id } } } = this.props;
           const result = await getMusics(id);
+          const favorites = await getFavoriteSongs();
+          const musics = result.map((resultOne) => (
+            {
+              ...resultOne,
+              isChecked: favorites
+                .some((favorite) => favorite.trackId === resultOne.trackId),
+            }
+          ));
+
           this.setState({
-            artistName: result[0].artistName,
-            collectionName: result[0].collectionName,
-            collectionImage: result[0].artworkUrl100,
+            artistName: musics[0].artistName,
+            collectionName: musics[0].collectionName,
+            collectionImage: musics[0].artworkUrl100,
           }, () => {
             this.setState({
-              tracks: [...result],
+              tracks: [...musics],
             });
           });
         }
@@ -62,6 +72,7 @@ class Album extends Component {
                       previewUrl={ music.previewUrl }
                       trackId={ music.trackId }
                       song={ music }
+                      checked={ music.isChecked }
                     />
                   ))
               }
