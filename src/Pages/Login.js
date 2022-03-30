@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router';
+import { Link } from 'react-router-dom';
 import { createUser } from '../services/userAPI';
 import Loading from '../componentes/Loading';
 
@@ -10,7 +10,6 @@ export default class Login extends Component {
     this.state = {
       inputName: '',
       isLoading: false,
-      redirect: false,
     };
   }
 
@@ -26,18 +25,19 @@ export default class Login extends Component {
       isLoading: true,
     });
 
-    createUser({ name: inputName })
-      .then(() => this.setState({ redirect: true }));
+    createUser({ name: inputName });
   };
 
   render() {
-    const { inputName, isLoading, redirect } = this.state;
+    const { inputName, isLoading } = this.state;
     const { onInputChange, clickButton } = this;
     const minCharacters = 3;
     const disabledButton = inputName.length < minCharacters;
 
     return (
       <div data-testid="page-login">
+
+        { isLoading && <Loading />}
         <form>
           <input
             data-testid="login-name-input"
@@ -47,19 +47,18 @@ export default class Login extends Component {
             onChange={ onInputChange }
           />
 
-          <button
-            data-testid="login-submit-button"
-            disabled={ disabledButton }
-            type="submit"
-            onClick={ clickButton }
-          >
-            Entrar
-          </button>
+          <Link to="/search">
+            <button
+              data-testid="login-submit-button"
+              disabled={ disabledButton }
+              type="submit"
+              onClick={ clickButton }
+            >
+              Entrar
+            </button>
+
+          </Link>
         </form>
-
-        { isLoading && <Loading />}
-        { redirect && <Redirect to="/search" />}
-
       </div>
     );
   }
