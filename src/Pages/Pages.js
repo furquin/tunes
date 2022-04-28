@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import Login from './Login';
 import Search from './Search';
 import Album from './Album';
@@ -11,7 +11,6 @@ import NotFound from './NotFound';
 class Pages extends Component {
   render() {
     return (
-      <BrowserRouter>
         <switch>
           <Route exact path="/" component={ Login } />
 
@@ -27,7 +26,6 @@ class Pages extends Component {
 
           <Route exact path="*" component={ NotFound } />
         </switch>
-      </BrowserRouter>
     );
   }
 }
